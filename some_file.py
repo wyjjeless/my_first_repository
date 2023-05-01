@@ -5,17 +5,18 @@ from aiogram.types import Message
 from aiogram.filters import Text, Command
 
 
-# Instead of BOT TOKEN HERE you need to insert your bot's token, received from @BotFather
-BOT_TOKEN: str = 'BOT TOKEN HERE '
+# Вместо BOT TOKEN HERE нужно вставить токен вашего бота,
+# полученный у @BotFather
+BOT_TOKEN: str = 'BOT TOKEN HERE'
 
-# Create bot and dispatcher objects
+# Создаем объекты бота и диспетчера
 bot: Bot = Bot(BOT_TOKEN)
 dp: Dispatcher = Dispatcher()
 
-# The quantity of attempts available to the user in the game
+# Количество попыток, доступных пользователю в игре
 ATTEMPTS: int = 5
 
-# Dict with future user's data
+# Словарь, в котором будут храниться данные пользователя
 user: dict = {'in_game': False,
               'secret_number': None,
               'attempts': None,
@@ -23,12 +24,12 @@ user: dict = {'in_game': False,
               'wins': 0}
 
 
-# A function that returns a random integer from 1 to 100
+# Функция возвращающая случайное целое число от 1 до 100
 def get_random_number() -> int:
     return random.randint(1, 100)
 
 
-# This handler will be triggered by the command "/start"
+# Этот хэндлер будет срабатывать на команду "/start"
 @dp.message(Command(commands=['start']))
 async def process_start_command(message: Message):
     await message.answer('Привет!\nДавай сыграем в игру "Угадай число"?\n\n'
@@ -36,7 +37,7 @@ async def process_start_command(message: Message):
                          'команд - отправьте команду /help')
 
 
-# This handler will be triggered by the command "/help"
+# Этот хэндлер будет срабатывать на команду "/help"
 @dp.message(Command(commands=['help']))
 async def process_help_command(message: Message):
     await message.answer(f'Правила игры:\n\nЯ загадываю число от 1 до 100, '
@@ -46,14 +47,14 @@ async def process_help_command(message: Message):
                          f'/stat - посмотреть статистику\n\nДавай сыграем?')
 
 
-# This handler will be triggered by the command "/stat"
+# Этот хэндлер будет срабатывать на команду "/stat"
 @dp.message(Command(commands=['stat']))
 async def process_stat_command(message: Message):
     await message.answer(f'Всего игр сыграно: {user["total_games"]}\n'
                          f'Игр выиграно: {user["wins"]}')
 
 
-# This handler will be triggered by the command "/cancel"
+# Этот хэндлер будет срабатывать на команду "/cancel"
 @dp.message(Command(commands=['cancel']))
 async def process_cancel_command(message: Message):
     if user['in_game']:
@@ -65,7 +66,7 @@ async def process_cancel_command(message: Message):
                              'Может, сыграем разок?')
 
 
-# This handler will trigger on the user's consent to play the game
+# Этот хэндлер будет срабатывать на согласие пользователя сыграть в игру
 @dp.message(Text(text=['Да', 'Давай', 'Сыграем', 'Игра',
                        'Играть', 'Хочу играть'], ignore_case=True))
 async def process_positive_answer(message: Message):
@@ -81,7 +82,7 @@ async def process_positive_answer(message: Message):
                              'и команды /cancel и /stat')
 
 
-# This handler will be triggered when the user refuses to play the game
+# Этот хэндлер будет срабатывать на отказ пользователя сыграть в игру
 @dp.message(Text(text=['Нет', 'Не', 'Не хочу', 'Не буду'], ignore_case=True))
 async def process_negative_answer(message: Message):
     if not user['in_game']:
@@ -92,7 +93,7 @@ async def process_negative_answer(message: Message):
                              'пожалуйста, числа от 1 до 100')
 
 
-# This handler will be triggered when the user sends numbers from 1 to 100
+# Этот хэндлер будет срабатывать на отправку пользователем чисел от 1 до 100
 @dp.message(lambda x: x.text and x.text.isdigit() and 1 <= int(x.text) <= 100)
 async def process_numbers_answer(message: Message):
     if user['in_game']:
@@ -120,7 +121,7 @@ async def process_numbers_answer(message: Message):
         await message.answer('Мы еще не играем. Хотите сыграть?')
 
 
-# This handler will be triggered on any other messages
+# Этот хэндлер будет срабатывать на остальные любые сообщения
 @dp.message()
 async def process_other_text_answers(message: Message):
     if user['in_game']:
